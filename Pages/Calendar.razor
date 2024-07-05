@@ -1,0 +1,90 @@
+﻿@page "/calendar"
+
+<PageTitle>Fasting Calendar</PageTitle>
+<table >
+    <tr>
+        <td>
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" @bind="startDate" />
+        </td>
+        <td>
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" @bind="endDate" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="checkbox" id="_24hr-clock" @bind="show24hrClock" />
+            <label for="_24hr-clock">24 hour clock</label>
+        </td>
+        <td title="Your device's local time is shown if not Varanasi time">
+            <input type="checkbox" id="show-varanasi-time" @bind="showVaranasiTime" title="Your device's local time is shown if not Varanasi time" />
+            <label for="show-varanasi-time">Show Varanasi Time</label>
+        </td>
+        <td>
+            Your device's local time is shown if not Varanasi time
+        </td>
+    </tr>
+</table>
+
+<iframe src="https://anandamarga.eu/fastingChart.php" style="float:right; width:50%; height:500px;"></iframe>
+
+    <table>
+        @foreach (var item in GetTithis())
+        {
+            @if (item.Angle == 300 || item.Angle == 312 || item.Angle == 348 || item.Angle == 0 || item.Angle == 120 || item.Angle == 132 || item.Angle == 168 ||item.Angle == 180)
+            {
+                <tr>
+                    <td>@item.Angle</td>
+                    <td>@GetVaranasiDateTime(item.DateTimeUTC)</td>
+                    <td>@item.Angle</td>
+                </tr>
+            }
+        }
+    </table>
+
+@code {
+    @using TithiTools;
+    //private static DateTime startDate = new DateTime(2024,01,06);
+    //private static DateTime endDate = new DateTime(2024,02,05);
+    private DateTime startDate = DateTime.Now.AddDays(-7);
+    private DateTime endDate = DateTime.Now.AddMonths(1);
+    private bool showVaranasiTime = false;
+    private bool show24hrClock = true;
+    private static readonly TimeZoneInfo VaranasiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Kolkata");
+    private static readonly TimeZoneInfo LocalTimeZone = TimeZoneInfo.Local;
+
+    class TithiRow
+    {
+        string name;
+        int startAngle;
+        int endAngle;
+        DateTime startDate;
+        DateTime endDate;
+    }
+
+    public IList<TithiTools.Tithi> GetTithis()
+    {
+        return TithiCalc.FindTithiInDateRange(startDate, endDate);
+        // https://www.astroica.com/vedic-astrology/tithi-calculator.php
+        // https://www.drikpanchang.com/?geoname-id=1275004
+    }
+
+    private List<TithiRow> GetOrderedTithis()
+    {
+        List<TithiRow> list = new List<TithiRow>();
+
+        foreach (var item in GetTithis())
+        {
+        }
+        return list;
+    }
+
+
+    public string GetVaranasiDateTime(DateTime dateTimeUTC)
+    {
+        var convertedDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUTC, showVaranasiTime ? VaranasiTimeZone : LocalTimeZone);
+        //return convertedDateTime.ToString("yyyy-MM-dd HH:mm:ss");
+        return show24hrClock ? convertedDateTime.ToString("dddd, dd MMMM yyyy, HH:mm:ss") : convertedDateTime.ToString("dddd, dd MMMM yyyy, hh:mm:ss tt");
+    }
+}
