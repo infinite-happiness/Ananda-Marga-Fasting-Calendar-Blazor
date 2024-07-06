@@ -1,0 +1,27 @@
+﻿/* trying to make a margin before first child or after last child of a month, but extremely difficult to make selector work */
+/* also, margin doesn't work in table, but a transparent border works okayish */
+
+/* https://stackoverflow.com/questions/2717480/css-selector-for-first-element-with-class */
+/* specifically: https://stackoverflow.com/a/13287975 and https://stackoverflow.com/a/68964419 */
+
+/* a .x not followed by a .x - (hacked variation of last child) */
+.month-01 + :not(.month-01),
+.month-02 + :not(.month-02),
+.month-03 + :not(.month-03),
+.month-04 + :not(.month-04),
+.month-05 + :not(.month-05),
+.month-06 + :not(.month-06),
+.month-07 + :not(.month-07),
+.month-08 + :not(.month-08),
+.month-09 + :not(.month-09),
+.month-10 + :not(.month-10),
+.month-11 + :not(.month-11),
+.month-12 + :not(.month-12)
+{
+    border-top: 40px solid transparent;
+}
+
+/* a .x not following a .x (hacked variation of first child) */
+:not(.month-01) + .month-01 {
+    /*border-top: 20px solid red;*/
+}

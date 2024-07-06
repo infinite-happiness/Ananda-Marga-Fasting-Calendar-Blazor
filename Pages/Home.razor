@@ -6,6 +6,8 @@
 
 <h1>Ananda Marga Fasting Calendar</h1>
 <p>This is a fasting chart for Ánanda Márga upavása with ekádashii, and amávasyá and púrńimá dates.</p>
+<p>Project website: <a href="https://infinite-happiness.github.io/Ananda-Marga-Fasting-Calendar/">https://infinite-happiness.github.io/Ananda-Marga-Fasting-Calendar/</a></p>
+<p>Code: <a href="https://github.com/infinite-happiness/Ananda-Marga-Fasting-Calendar">https://github.com/infinite-happiness/Ananda-Marga-Fasting-Calendar</a></p>
 
 <h2>Features</h2>
 <ul>
@@ -44,9 +46,8 @@ Here follows some quotes from that website:<br />
 <code> For those who do night meditation on the new moon, those calculations are also included (1st Night).</code>
 </p>
 
-<h2>Additional Information on the Methodology</h2>
-You can see on <a href="https://www.anandamarga.eu/fastingChart.php" target="_blank">The Official Website of Ananda Marga in Europe - Berlin Sector</a> that the relevant moon phases are tithis.
-Read more about <a href="https://en.wikipedia.org/wiki/Tithi" target="_blank">tithis on WikiPedia</a>.
+<h4>Tithis</h4>
+<p>You can see on <a href="https://www.anandamarga.eu/fastingChart.php" target="_blank">The Official Website of Ananda Marga in Europe - Berlin Sector</a> that the relevant moon phases are tithis.</p>
 
 <code>In Vedic timekeeping, a tithi is a "duration of two faces of moon that is observed from earth", known as milа̄lyа̄ (Newar: 𑐩𑐶𑐮𑐵𑐮𑑂𑐫𑐵𑑅, मिलाल्याः) in Nepal Bhasa,[1] or the time it takes for the longitudinal angle between the Moon and the Sun to increase by 12°. In other words, a tithi is a time duration between the consecutive epochs that correspond to when the longitudinal angle between the Sun and the Moon is an integer multiple of 12°. Tithis begin at varying times of day and vary in duration approximately from 19 to 26 hours.[2] Every day of a lunar month is called tithi.</code>
 <img src="img/Tithi_Calculation.jpg" />
@@ -54,25 +55,47 @@ Read more about <a href="https://en.wikipedia.org/wiki/Tithi" target="_blank">ti
     <source src="video/Tithi.ogv.480p.vp9.webm" type="video/mp4">
     Your browser does not support the video tag.
 </video>
+<p>Read more about <a href="https://en.wikipedia.org/wiki/Tithi" target="_blank">tithis on WikiPedia</a>.</p>
 
-When does the day start?
-https://www.quora.com/In-Hindu-culture-does-the-new-day-start-at-12-00-AM
-https://www.quora.com/At-what-time-does-a-day-start-according-to-the-Hindu-calendar
-https://www.timeanddate.com/astronomy/different-types-twilight.html
+
+<h4>When is sunrise?</h4>
+<p>The concept of dawn (sunrise) has different meanings in modern science. On the illustration below you can see that the sun is below the horizon during dawn, and in the center of the horizon at sunrise.</p>
+<img src="img/sun-position-sunrise-dawn.webp" />
+<small>Credit: ASTRONOMY: ROEN KELLY, after Aurora Borealis Observatory</small>
+
+<p>According to vedic astrology, it's hard to determine whether dawn or sunrise should be using for the start of the day. See these quora answers:</p>
+<ul>
+    <li><a href="https://www.quora.com/In-Hindu-culture-does-the-new-day-start-at-12-00-AM" target="_blank">https://www.quora.com/In-Hindu-culture-does-the-new-day-start-at-12-00-AM</a></li>
+    <li><a href="https://www.quora.com/At-what-time-does-a-day-start-according-to-the-Hindu-calendar" target="_blank">https://www.quora.com/At-what-time-does-a-day-start-according-to-the-Hindu-calendar</a></li>
+</ul>
 
 <h2>Available Technology</h2>
-At the time of writing there are some free, public libraries for calculating tithis:
+<p>At the time of writing there are some free, public libraries for calculating tithis:</p>
 <ul>
     <li><a href="https://github.com/MikeDenisov/TithiTools" target="_blank">https://github.com/MikeDenisov/TithiTools</a> (used on this website)</li>
     <li><a href="https://github.com/schenna/panchangJS" target="_blank">https://github.com/schenna/panchangJS</a> (saved in the source code)</li>
     <li><a href="https://github.com/karthikraman/panchangam/" target="_blank">https://github.com/karthikraman/panchangam/</a> (not saved in the source code, because there are too many depdendencies)</li>
 </ul>
 
-https://github.com/jwfxpr/SunriseCalculator
-https://github.com/porrey/Solar-Calculator
+<p>For calculating sunrise, these libraries are available:</p>
+<ul>
+    <li><a href="https://github.com/porrey/Solar-Calculator" target="_blank">https://github.com/porrey/Solar-Calculator</a></li>
+    <li><a href="https://github.com/jwfxpr/SunriseCalculator" target="_blank">https://github.com/jwfxpr/SunriseCalculator</a></li>
+    <li><a href="https://github.com/Hypnos3/suncalc3" target="_blank">https://github.com/Hypnos3/suncalc3</a></li>
+    <li><a href="https://github.com/mourner/suncalc" target="_blank">https://github.com/mourner/suncalc</a></li>
+</ul>
+
 
 <h2>This Website</h2>
-This website is created using Blazor, .NET and C#.
+The method for calculating the fasting dates on this website is as follows:
+<ul>
+    <li>Tithis are calculated using TithiTools.</li>
+    <li>Since tithis are based on the moonphase, and the moonphase is the same all the time on the whole planet, then in order to use Varanasi for any calculations doesn't affect the tithis in any way.</li>
+    <li>The time of dawn/sunrise for any particular day depends on the geograhic location of observation. Therefore the sunrise of Varanasi is used for calculating the fasting days.</li>
+
+</ul>
+
+This website is created using Blazor, .NET 8.0 and C#.
 
 Tools used:
 <ul>

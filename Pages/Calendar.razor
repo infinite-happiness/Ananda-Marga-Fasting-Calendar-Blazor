@@ -29,7 +29,7 @@
 </table>
 </form>
 
-<iframe src="https://anandamarga.eu/fastingChart.php" style="float:right; width:50%; height:500px;"></iframe>
+<img src="img/fasting_2024_1.png" style="float:right;"/>
 
 <table style="display:none;">
     @foreach (var item in GetTithis())
@@ -50,13 +50,16 @@
         <th>Tithi</th>
         <th>Start</th>
         <th>End</th>
+        <th>Fasting Day</th>
     </tr>
     @foreach (var item in GetOrderedTithis())
     {
-            <tr>
+            <tr class="month-@item.fastingDayMonthString">
                 <td>@item.name</td>
                 <td>@GetVaranasiDateTime(item.startingItem.DateTimeUTC)</td>
                 <td>@GetVaranasiDateTime(item.endingItem.DateTimeUTC)</td>
+                <td>@item.fastingDayDateTime</td>
+                <td>@item.fastingDaysTimeDiff</td>
             </tr>
     }
 </table>
@@ -64,11 +67,18 @@
 @code {
     @using System.Linq;
     @using TithiTools;
+    @using Innovative.SolarCalculator;
+
     //private static DateTime startDate = new DateTime(2024,01,06);
     //private static DateTime endDate = new DateTime(2024,02,05);
     //private DateTime startDate = DateTime.Now.AddDays(-7);
-    private DateTime startDate = DateTime.Now.AddMonths(-7);
-    private DateTime endDate = DateTime.Now.AddMonths(1);
+    //private DateTime startDate = DateTime.Now.AddMonths(-6);
+
+    // make sure it's the start of the day 00h00m00s
+    // as you could otherwise miss an event if you set a date and it occurs that day but earlier than current time
+    private DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 6, DateTime.Now.Day, 0, 0, 0);
+    private DateTime endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+
     private bool showVaranasiTime = true;
     private bool show24hrClock = true;
     private static readonly TimeZoneInfo VaranasiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Kolkata");
@@ -77,12 +87,32 @@
     class TithiRow
     {
         public string name = "";
-        int startAngle;
-        int endAngle;
-        DateTime startDate;
-        DateTime endDate;
         public TithiTools.Tithi startingItem;
         public TithiTools.Tithi endingItem;
+        //public SolarTimes? precedingSolarTimes; // solar times before the start of the tithi
+        //public SolarTimes? intermediateSolarTimes; // solar times during the tithi
+        //public SolarTimes? succeedingSolarTimes; // solar times after the end of the tithi
+        public TimeSpan tithiDurationFirstDay;
+        public TimeSpan tithiDurationSecondDay;
+        public TimeSpan fastingDaysTimeDiff;
+        public DateTime fastingDayDateTime;
+        public string fastingDayMonthString = "";
+
+        public void setFastingDay()
+        {
+            // https://github.com/porrey/Solar-Calculator/blob/master/Src/Solar-Calculator-Solution/Innovative.SolarCalculator/SolarTimes.cs
+            SolarTimes intermediateSolarTimes = new SolarTimes(this.endingItem.DateTimeUTC, 25.31668, 83.01041);
+            //DateTime intermediateSunrise = intermediateSolarTimes.DawnAstronomical;
+            //DateTime intermediateSunrise = intermediateSolarTimes.Sunrise;
+            DateTime intermediateSunrise = intermediateSolarTimes.DawnCivil;
+            this.tithiDurationFirstDay = intermediateSunrise - this.startingItem.DateTimeUTC;
+            this.tithiDurationSecondDay = this.endingItem.DateTimeUTC - intermediateSunrise;
+            if (this.tithiDurationFirstDay > this.tithiDurationSecondDay) fastingDayDateTime = this.startingItem.DateTimeUTC;
+            else fastingDayDateTime = this.endingItem.DateTimeUTC;
+
+            fastingDaysTimeDiff = this.tithiDurationSecondDay - this.tithiDurationFirstDay;
+            fastingDayMonthString = fastingDayDateTime.ToString("MM");
+        }
     }
 
     public IList<TithiTools.Tithi> GetTithis()
@@ -108,13 +138,20 @@
                 if (item.Angle == 120) row.name = "Ekádashii";
                 if (item.Angle == 168) row.name = "Púrńimá";
                 row.startingItem = item;
+                // varanasi lat and long
+                // will get the solar times before given time item.DateTimeUTC
+                //row.precedingSolarTimes = new SolarTimes(item.DateTimeUTC, 25.31668, 83.01041);
                 list.Add(row);
             }
             else if (list.Count > 0 && endingAngles.Contains(item.Angle))
             {
                 list[^1].endingItem = item; // list[^1] == get last item
+                                            // varanasi lat and long
+                                            // will get the solar times before given time item.DateTimeUTC
+                //list[^1].intermediateSolarTimes = new SolarTimes(item.DateTimeUTC, 25.31668, 83.01041);
+                //list[^1].succeedingSolarTimes = new SolarTimes(item.DateTimeUTC.AddDays(1), 25.31668, 83.01041);
+                list[^1].setFastingDay();
             }
-            //@if (item.Angle == 300 || item.Angle == 312 || item.Angle == 348 || item.Angle == 0 || item.Angle == 120 || item.Angle == 132 || item.Angle == 168 || item.Angle == 180)
         }
         return list;
     }
@@ -124,6 +161,6 @@
     {
         var convertedDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUTC, showVaranasiTime ? VaranasiTimeZone : LocalTimeZone);
         //return convertedDateTime.ToString("yyyy-MM-dd HH:mm:ss");
-        return show24hrClock ? convertedDateTime.ToString("dddd, dd MMMM yyyy, HH:mm:ss") : convertedDateTime.ToString("dddd, dd MMMM yyyy, hh:mm:ss tt");
+        return show24hrClock ? convertedDateTime.ToString("ddd, dd MMM yyyy, HH:mm") : convertedDateTime.ToString("ddd, dd MMM yyyy, hh:mm tt");
     }
 }
