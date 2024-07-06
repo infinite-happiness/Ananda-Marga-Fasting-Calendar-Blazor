@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ananda Marga Fasting Calendar Blazor WebAssembly</title>
-    <base href="/Ananda-Marga-Fasting-Calendar/" />
+    <title>Ananda Marga Fasting Calendar</title>
+
+    <!--
+        <base href="/Ananda-Marga-Fasting-Calendar/" />
+    <base href="/" />
+        -->
+
+    <script>
+        var baseTag = document.createElement("base");
+        var appRoot = "/Ananda-Marga-Fasting-Calendar/";
+        var path = document.location.pathname;
+        baseTag.href = (path.indexOf(appRoot) === 0 || path + "/" === appRoot) ? appRoot : "/";
+        document.head.appendChild(baseTag);
+    </script>
+
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="css/mvp.css">

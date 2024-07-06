@@ -1,6 +1,7 @@
 ﻿@page "/calendar"
 
 <PageTitle>Fasting Calendar</PageTitle>
+<form>
 <table >
     <tr>
         <td>
@@ -26,41 +27,62 @@
         </td>
     </tr>
 </table>
+</form>
 
 <iframe src="https://anandamarga.eu/fastingChart.php" style="float:right; width:50%; height:500px;"></iframe>
 
-    <table>
-        @foreach (var item in GetTithis())
+<table style="display:none;">
+    @foreach (var item in GetTithis())
+    {
+        @if (item.Angle == 300 || item.Angle == 312 || item.Angle == 348 || item.Angle == 0 || item.Angle == 120 || item.Angle == 132 || item.Angle == 168 || item.Angle == 180)
         {
-            @if (item.Angle == 300 || item.Angle == 312 || item.Angle == 348 || item.Angle == 0 || item.Angle == 120 || item.Angle == 132 || item.Angle == 168 ||item.Angle == 180)
-            {
-                <tr>
-                    <td>@item.Angle</td>
-                    <td>@GetVaranasiDateTime(item.DateTimeUTC)</td>
-                    <td>@item.Angle</td>
-                </tr>
-            }
+            <tr>
+                <td>@item.Angle</td>
+                <td>@GetVaranasiDateTime(item.DateTimeUTC)</td>
+                <td>@item.Angle</td>
+            </tr>
         }
-    </table>
+    }
+</table>
+
+<table>
+    <tr>
+        <th>Tithi</th>
+        <th>Start</th>
+        <th>End</th>
+    </tr>
+    @foreach (var item in GetOrderedTithis())
+    {
+            <tr>
+                <td>@item.name</td>
+                <td>@GetVaranasiDateTime(item.startingItem.DateTimeUTC)</td>
+                <td>@GetVaranasiDateTime(item.endingItem.DateTimeUTC)</td>
+            </tr>
+    }
+</table>
 
 @code {
+    @using System.Linq;
     @using TithiTools;
     //private static DateTime startDate = new DateTime(2024,01,06);
     //private static DateTime endDate = new DateTime(2024,02,05);
-    private DateTime startDate = DateTime.Now.AddDays(-7);
+    //private DateTime startDate = DateTime.Now.AddDays(-7);
+    private DateTime startDate = DateTime.Now.AddMonths(-7);
     private DateTime endDate = DateTime.Now.AddMonths(1);
-    private bool showVaranasiTime = false;
+    private bool showVaranasiTime = true;
     private bool show24hrClock = true;
     private static readonly TimeZoneInfo VaranasiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Kolkata");
     private static readonly TimeZoneInfo LocalTimeZone = TimeZoneInfo.Local;
 
     class TithiRow
     {
-        string name;
+        public string name = "";
         int startAngle;
         int endAngle;
         DateTime startDate;
         DateTime endDate;
+        public TithiTools.Tithi startingItem;
+        public TithiTools.Tithi endingItem;
     }
 
     public IList<TithiTools.Tithi> GetTithis()
@@ -72,10 +94,27 @@
 
     private List<TithiRow> GetOrderedTithis()
     {
+        int[] startingAngles = { 300, 348, 120, 168}; // starting angles of ekadashi, amavasya, purnima
+        int[] endingAngles = { 312, 0, 132, 180 };
         List<TithiRow> list = new List<TithiRow>();
 
         foreach (var item in GetTithis())
         {
+            if (startingAngles.Contains(item.Angle) )
+            {
+                TithiRow row = new TithiRow();
+                if (item.Angle == 300) row.name = "Ekádashii";
+                if (item.Angle == 348) row.name = "Amávasyá";
+                if (item.Angle == 120) row.name = "Ekádashii";
+                if (item.Angle == 168) row.name = "Púrńimá";
+                row.startingItem = item;
+                list.Add(row);
+            }
+            else if (list.Count > 0 && endingAngles.Contains(item.Angle))
+            {
+                list[^1].endingItem = item; // list[^1] == get last item
+            }
+            //@if (item.Angle == 300 || item.Angle == 312 || item.Angle == 348 || item.Angle == 0 || item.Angle == 120 || item.Angle == 132 || item.Angle == 168 || item.Angle == 180)
         }
         return list;
     }

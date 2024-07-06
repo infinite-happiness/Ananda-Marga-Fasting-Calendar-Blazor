@@ -1,0 +1,4 @@
+margin before new month using css:last (or :first)
+move most of info from Home.razor to About.razor, making Home.razor embeddable
+option to show times in UTC - using select instead of checkbox
+option to show times (days, months) in local language or english - using select
