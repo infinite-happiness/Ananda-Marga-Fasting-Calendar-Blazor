@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Ananda Marga Fasting Calendar Blazor WebAssembly",
   "resources": {
-    "hash": "sha256-vw7HmC7H3HbiFUvvUDYRob3SQeVqd/VWNTeLNran4IA=",
+    "hash": "sha256-/3LBR5aw4skT58PIX7g/6Uqfi6z27LYKbUpDu9mUG8o=",
     "jsModuleNative": {
       "dotnet.native.8.0.6.c3e7fi786x.js": "sha256-YU6M9+jtDVnB8/wtrgIndOstzNh778Ls8g9XnbjorSk="
     },
@@ -17,11 +17,11 @@
       "icudt_no_CJK.dat": "sha256-L7sV7NEYP37/Qr2FPCePo5cJqRgTXRwGHuwF5Q+0Nfs="
     },
     "assembly": {
-      "Ananda Marga Fasting Calendar Blazor WebAssembly.wasm": "sha256-LKY5/TlXiyFszCcm38WF2UUStkju8uBgTD8+/syvv0k=",
+      "Ananda Marga Fasting Calendar Blazor WebAssembly.wasm": "sha256-qGE0aU/ebXu4VJyaITMX6vDdk+lbJnvKPO/pSI9zl1w=",
       "CoordinateSharp.wasm": "sha256-gmeyjwyKAe1FsY7Ovflu223LAYKEwNqYgWa2WvdebuI=",
       "Innovative.Geometry.Angle.wasm": "sha256-Kn07d3NZ7dLzRyWCcl7K15HLB7Xq6gkSFcae9CrpaBM=",
       "Innovative.SolarCalculator.wasm": "sha256-S++j5lzFoEfzactX1dZSNFUmOQk1KVrhEGcN7GhRdSw=",
-      "Microsoft.AspNetCore.Components.wasm": "sha256-dg9skytlZrVHoqm6Prw3kHbWN9RllN6VLgMPp6ZDgW4=",
+      "Microsoft.AspNetCore.Components.wasm": "sha256-fNXPcmjzCakxv9h81h82/yIfMRYpV/l34zcJvZSIpGk=",
       "Microsoft.AspNetCore.Components.Web.wasm": "sha256-4tmx4uC98MyKjCuM9ErBZwXpqkLx4fwVZfJQIv+Y0+A=",
       "Microsoft.AspNetCore.Components.WebAssembly.wasm": "sha256-LYJGTqka6p2RaQhwjm0nbX5muzjO6rM8oTE9uoUmGBs=",
       "Microsoft.Extensions.Configuration.Abstractions.wasm": "sha256-87sn2TYqgdZ95sXmavjKEzoEfMgHnYQ9LOvnMX+aZcI=",
@@ -46,10 +46,10 @@
       "System.Net.Http.wasm": "sha256-u3C2V2cVYmxtfP7rsy7vhG0ge6VAdFpsK+2EFmytbQQ=",
       "System.Net.Primitives.wasm": "sha256-Ba0i13FLK+wmbzRggicu3e9l/6EAomNd1eE0qYoiz9c=",
       "System.ObjectModel.wasm": "sha256-JZbN6TFUzwDe9NpFLDbBMUG+448RggMAVc00697m68c=",
-      "System.Private.CoreLib.wasm": "sha256-BWKMFF2PNd84LLn9EgaKPHwZ4E1s4lEbMIY7+cwYG4A=",
+      "System.Private.CoreLib.wasm": "sha256-5xBIF/mI5oXRKfa4B+vz3ddCtK1bt8RVKLO1VAQLzxg=",
       "System.Private.Uri.wasm": "sha256-9cz1uWBCo1E3pamfO8t55T8s4ChW0f6eud/acpM+A14=",
       "System.Runtime.InteropServices.JavaScript.wasm": "sha256-/v+08uFNaDJLlczb8sKxTZSW3v+FHdsHNVN59bCo1C0=",
-      "System.Runtime.wasm": "sha256-Z3J7iYbrbREVCpPQS3ZoRwsdsLejQt30E/nWH9Y5wSs=",
+      "System.Runtime.wasm": "sha256-DHz5BR+X1huFTPd4EMB9JjqoYdsHQod3lKD526YEqOY=",
       "System.Text.Encodings.Web.wasm": "sha256-kUB1Y7HBZCe5X05htxKLP7ZedG/Lb4sP+qjmvelsUdI=",
       "System.Text.Json.wasm": "sha256-ghUacCz6VnHto6Whb7WijtW4/XJgZP3BhcPTiPOIBUY=",
       "System.Text.RegularExpressions.wasm": "sha256-Z9DnfqSqNu+H8JSLXRf/SVLtHGmioXKwzqRFtX6BQVE=",

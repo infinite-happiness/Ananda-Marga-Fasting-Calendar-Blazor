@@ -18,10 +18,12 @@
 .month-11 + :not(.month-11),
 .month-12 + :not(.month-12)
 {
-    border-top: 40px solid transparent;
+    border-top: 80px solid transparent;
 }
 
 /* a .x not following a .x (hacked variation of first child) */
 :not(.month-01) + .month-01 {
     /*border-top: 20px solid red;*/
 }
+
+.show-False{display:none;}
