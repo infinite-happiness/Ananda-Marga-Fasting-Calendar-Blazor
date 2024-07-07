@@ -1,8 +1,14 @@
 ﻿@page "/calendar"
 
 <PageTitle>Fasting Calendar</PageTitle>
+
 <form>
 <table >
+    <tr>
+            <td colspan="2">
+                Please note! If you select a long time span this page may be unresponsive for some time!
+            </td>
+    </tr>
     <tr>
         <td>
             <label for="start-date">Start Date:</label>
@@ -13,23 +19,47 @@
             <input type="date" id="end-date" @bind="endDate" />
         </td>
     </tr>
+
     <tr>
         <td>
             <input type="checkbox" id="_24hr-clock" @bind="show24hrClock" />
-            <label for="_24hr-clock">24 hour clock</label>
-        </td>
-        <td title="Your device's local time is shown if not Varanasi time">
-            <input type="checkbox" id="show-varanasi-time" @bind="showVaranasiTime" title="Your device's local time is shown if not Varanasi time" />
-            <label for="show-varanasi-time">Show Varanasi Time</label>
+            <label for="_24hr-clock">Show 24 hour clock</label>
+            <br />
+                <input type="checkbox" id="showTithiStartsAndEnds" @bind="showTithiStartsAndEnds" />
+            <label for="showTithiStartsAndEnds">Show Tithi Starts and Ends</label>
+            <br />
+                <input type="checkbox" id="showVaranasiSunrises" @bind="showVaranasiSunrises" />
+            <label for="showVaranasiSunrises">Show Varanasi Sunrises</label>
+            <br />
+                <input type="checkbox" id="showDebugInfo" @bind="showDebugInfo" />
+            <label for="showDebugInfo">Show Debug Info</label>
         </td>
         <td>
-            Your device's local time is shown if not Varanasi time
+            <label for="timeZone">Time Zone</label>
+                <select id="timeZone" @bind="selectedTimeZone">
+                <option value="varanasi">Varanasi @VaranasiTimeZone</option>
+                <option value="local">Local @LocalTimeZone</option>
+                <option value="utc">@UtcTimeZone</option>
+            </select>
         </td>
     </tr>
+
+        <tr class="show-@showDebugInfo">
+            <td>
+                You might need to click something to make this work:<br />
+                correctFastingDays: @correctFastingDays<br />
+                incorrectFastingDays: @incorrectFastingDays<br />
+                accuracy: @(correctFastingDays - incorrectFastingDays)<br />
+                heavy calculations: @listExecutions<br />
+            </td>
+            <td>
+            </td>
+        </tr>
+
 </table>
 </form>
 
-<img src="img/fasting_2024_1.png" style="float:right;"/>
+<img src="img/fasting_2024_1.png" style="float:right;" / class="show-@showDebugInfo">
 
 <table style="display:none;">
     @foreach (var item in GetTithis())
@@ -38,7 +68,7 @@
         {
             <tr>
                 <td>@item.Angle</td>
-                <td>@GetVaranasiDateTime(item.DateTimeUTC)</td>
+                <td>@FormatDateTime(item.DateTimeUTC)</td>
                 <td>@item.Angle</td>
             </tr>
         }
@@ -48,18 +78,30 @@
 <table>
     <tr>
         <th>Tithi</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Fasting Day</th>
+        <th>Fasting Date</th>
     </tr>
     @foreach (var item in GetOrderedTithis())
     {
-            <tr class="month-@item.fastingDayMonthString">
+        <tr class="month-@item.fastingDayMonthString">
                 <td>@item.name</td>
-                <td>@GetVaranasiDateTime(item.startingItem.DateTimeUTC)</td>
-                <td>@GetVaranasiDateTime(item.endingItem.DateTimeUTC)</td>
-                <td>@item.fastingDayDateTime</td>
-                <td>@item.fastingDaysTimeDiff</td>
+            <td>
+                @FormatDateTime(item.fastingDayDateTime, true, true)<br />
+                <small class="show-@showTithiStartsAndEnds">
+                    @item.name start: @FormatDateTime(item.startingItem.DateTimeUTC)<br />
+                    @item.name end: @FormatDateTime(item.endingItem.DateTimeUTC)<br />
+                </small>
+                <small class="show-@showVaranasiSunrises">
+                Sunrise: @FormatDateTime(item.intermediateSunrise)<br />
+                </small>
+                <small class="show-@showDebugInfo">
+                Time start to sunrise: @(item.intermediateSunrise - item.startingItem.DateTimeUTC) <br />
+                    Time sunrise to end: @(item.endingItem.DateTimeUTC-item.intermediateSunrise)<br />
+                    @if (!item.isCorrect)
+                    {
+                        <span style="color:red;">unexpected fasting date</span><br />
+                    }
+                </small>
+            </td>
             </tr>
     }
 </table>
@@ -76,43 +118,108 @@
 
     // make sure it's the start of the day 00h00m00s
     // as you could otherwise miss an event if you set a date and it occurs that day but earlier than current time
-    private DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 6, DateTime.Now.Day, 0, 0, 0);
-    private DateTime endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+    public DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 6, DateTime.Now.Day, 0, 0, 0);
+    public DateTime endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
 
     private bool showVaranasiTime = true;
     private bool show24hrClock = true;
+    private bool showTithiStartsAndEnds = true;
+    private bool showVaranasiSunrises = true;
+    private bool showDebugInfo = true;
+
+    private int listExecutions = 0;
+    public int correctFastingDays = 0;
+    public int incorrectFastingDays = 0;
+
+    public string selectedTimeZone = "varanasi";
     private static readonly TimeZoneInfo VaranasiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Kolkata");
     private static readonly TimeZoneInfo LocalTimeZone = TimeZoneInfo.Local;
+    private static readonly TimeZoneInfo UtcTimeZone = TimeZoneInfo.Utc;
 
-    class TithiRow
+    public class TithiRow
     {
         public string name = "";
         public TithiTools.Tithi startingItem;
         public TithiTools.Tithi endingItem;
-        //public SolarTimes? precedingSolarTimes; // solar times before the start of the tithi
-        //public SolarTimes? intermediateSolarTimes; // solar times during the tithi
-        //public SolarTimes? succeedingSolarTimes; // solar times after the end of the tithi
+        public SolarTimes? precedingSolarTimes; // solar times before the start of the tithi
+        public SolarTimes? intermediateSolarTimes; // solar times during the tithi
+                                                   //public SolarTimes? succeedingSolarTimes; // solar times after the end of the tithi
+        public DateTime intermediateSunrise;
         public TimeSpan tithiDurationFirstDay;
         public TimeSpan tithiDurationSecondDay;
-        public TimeSpan fastingDaysTimeDiff;
+        //public TimeSpan fastingDaysTimeDiff;
         public DateTime fastingDayDateTime;
         public string fastingDayMonthString = "";
+        //public bool isOpened = false;
+        public bool isCorrect;
+
+        private void setIntermediateSolarTimes(DateTime dateTime)
+        {
+            // varanasi lat and long
+            this.intermediateSolarTimes = new SolarTimes(dateTime, 25.31668, 83.01041);
+            //DateTime intermediateSunrise = intermediateSolarTimes.DawnAstronomical;
+            //DateTime intermediateSunrise = intermediateSolarTimes.Sunrise;
+            //DateTime intermediateSunrise = intermediateSolarTimes.DawnCivil;
+            this.intermediateSunrise = this.intermediateSolarTimes.DawnNautical;
+        }
 
         public void setFastingDay()
         {
             // https://github.com/porrey/Solar-Calculator/blob/master/Src/Solar-Calculator-Solution/Innovative.SolarCalculator/SolarTimes.cs
-            SolarTimes intermediateSolarTimes = new SolarTimes(this.endingItem.DateTimeUTC, 25.31668, 83.01041);
-            //DateTime intermediateSunrise = intermediateSolarTimes.DawnAstronomical;
-            //DateTime intermediateSunrise = intermediateSolarTimes.Sunrise;
-            DateTime intermediateSunrise = intermediateSolarTimes.DawnCivil;
-            this.tithiDurationFirstDay = intermediateSunrise - this.startingItem.DateTimeUTC;
-            this.tithiDurationSecondDay = this.endingItem.DateTimeUTC - intermediateSunrise;
+            /*
+            * Errors:
+            * 7 jan 2024
+            * 10 feb 2024 | 07 mar 2024
+            * 21 mar 2024
+            * 24 apr 2024 | 03 jun 2024 | 06 jul 2024
+            * 
+            * Errors on berlin chart: 24 mar 2024
+            * 
+            * close call, diff from berlin: 06 juni 2024
+            *
+            * Cases:
+            * 1: fasting day is on starting day
+            * 2: fasting day is on ending day
+            *
+            * start early morning             :08apr:OK | | | 2:21mar:ERROR       end late evening | end early morning
+            * start morning before sunrise    | 2:24apr:ERROR | 1:17jun:OK        end morning before sunrise | end morning after sunrise | (end at sunrise hard to test so skipped)
+            * start at sunrise                         end morning before sunrise | end morning after sunrise | (end at sunrise hard to test so skipped)
+            * start morning after sunrise     1:10feb:ERROR | 2: | 1:19feb:OK       end before sunrise | end after sunrise | (end at sunrise hard to test so skipped)
+            * start midday                    1:23feb:OK         end midday
+            * start evening                   1:10jan:OK | 2:21jan:OK | |        end evening | end early morning
+             */
+
+            setIntermediateSolarTimes(this.endingItem.DateTimeUTC);
+            this.tithiDurationFirstDay = this.intermediateSunrise - this.startingItem.DateTimeUTC;
+
+            // sometimes, the acquired sunrise/dawn is before the tithi start, making this.tithiDurationFirstDay negative
+            if (this.tithiDurationFirstDay < TimeSpan.Zero)
+            {
+                this.precedingSolarTimes = this.intermediateSolarTimes;
+                //Console.WriteLine("tithiDurationFirstDay below zero, duration: " + this.tithiDurationFirstDay + ", sunrise: " + this.intermediateSunrise);
+                setIntermediateSolarTimes(this.endingItem.DateTimeUTC.AddDays(1));
+                this.tithiDurationFirstDay = this.intermediateSunrise - this.startingItem.DateTimeUTC;
+                //Console.WriteLine("tithiDurationFirstDay fixed: " + this.tithiDurationFirstDay + ", sunrise: " + this.intermediateSunrise);
+                //Console.WriteLine("");
+            }
+
+            this.tithiDurationSecondDay = this.endingItem.DateTimeUTC - this.intermediateSunrise;
+
+            // sometimes, the acquired sunrise/dawn is before after tithi end, making this.tithiDurationSecondDay negative
+            // if it negative, and this.precedingSolarTimes has a value, it means this.tithiDurationFirstDay was negative too
+            // and as such, the tithi was shorter than the day (the time between the two acquired sunrises)
+            // in that case, nothing needs to be done, as the fastingDay is set correctly, so below code is commented out
+            //if (this.tithiDurationSecondDay < TimeSpan.Zero && this.precedingSolarTimes != null)
+            //{
+            //}
+
             if (this.tithiDurationFirstDay > this.tithiDurationSecondDay) fastingDayDateTime = this.startingItem.DateTimeUTC;
             else fastingDayDateTime = this.endingItem.DateTimeUTC;
 
-            fastingDaysTimeDiff = this.tithiDurationSecondDay - this.tithiDurationFirstDay;
+            //fastingDaysTimeDiff = this.tithiDurationSecondDay - this.tithiDurationFirstDay;
             fastingDayMonthString = fastingDayDateTime.ToString("MM");
         }
+
     }
 
     public IList<TithiTools.Tithi> GetTithis()
@@ -148,19 +255,134 @@
                 list[^1].endingItem = item; // list[^1] == get last item
                                             // varanasi lat and long
                                             // will get the solar times before given time item.DateTimeUTC
-                //list[^1].intermediateSolarTimes = new SolarTimes(item.DateTimeUTC, 25.31668, 83.01041);
-                //list[^1].succeedingSolarTimes = new SolarTimes(item.DateTimeUTC.AddDays(1), 25.31668, 83.01041);
+                                            //list[^1].intermediateSolarTimes = new SolarTimes(item.DateTimeUTC, 25.31668, 83.01041);
+                                            //list[^1].succeedingSolarTimes = new SolarTimes(item.DateTimeUTC.AddDays(1), 25.31668, 83.01041);
                 list[^1].setFastingDay();
             }
         }
+
+        new TestData(this, list);
+        listExecutions++;
+        Console.WriteLine("Accuracy:" + correctFastingDays + " " + incorrectFastingDays);
         return list;
     }
 
-
-    public string GetVaranasiDateTime(DateTime dateTimeUTC)
+    public string FormatDateTime(DateTime dateTimeUTC, bool dateOnly=false, bool forceVaranasiTime = false)
     {
-        var convertedDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUTC, showVaranasiTime ? VaranasiTimeZone : LocalTimeZone);
+        var convertedDateTime = dateTimeUTC;
+        if (selectedTimeZone == "local") convertedDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUTC, LocalTimeZone);
+        if (selectedTimeZone == "varanasi" || forceVaranasiTime) convertedDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUTC, VaranasiTimeZone);
         //return convertedDateTime.ToString("yyyy-MM-dd HH:mm:ss");
-        return show24hrClock ? convertedDateTime.ToString("ddd, dd MMM yyyy, HH:mm") : convertedDateTime.ToString("ddd, dd MMM yyyy, hh:mm tt");
+        if (!dateOnly) return show24hrClock ? convertedDateTime.ToString("ddd, dd MMM yyyy, HH:mm") : convertedDateTime.ToString("ddd, dd MMM yyyy, hh:mm tt");
+        return show24hrClock ? convertedDateTime.ToString("ddd, dd MMM yyyy") : convertedDateTime.ToString("ddd, dd MMM yyyy");
     }
+
+    class TestData
+    {
+        public List<DateTime> testDataListAMFastingDays2024 = new List<DateTime>();
+        public TestData(Calendar calendar, List<TithiRow> list)
+        {
+            /*
+            * data verified:
+            * https://www.anandamarga.eu/fastingChart.php
+            * https://india.anandamarga.org/fasting-calendar/
+            * https://hks.amps.org/fasting-chart/
+            * https://mnl-amps.org/index.php/fasting-chart/ - not same
+            * https://ampsnys.org/fasting-calendar/ - not same
+            */
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,01,07));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,01,10));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,01,21));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,01,25));
+
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,02,05));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,02,09));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,02,19));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,02,23));
+
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,03,06));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,03,09));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,03,20));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,03,25));
+
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,04,04));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,04,08));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,04,19));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,04,23));
+
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,05,04));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,05,07));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,05,18));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,05,23));
+
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,06,02));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,06,05));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,06,17));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,06,21));
+
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,07,01));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,07,05));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,07,17));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,07,21));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,07,30));
+
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,08,03));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,08,15));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,08,19));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,08,29));
+
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024, 09, 02));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,09,13));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,09,17));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024, 09, 27));
+
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,10,01));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,10,13));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,10,17));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024, 10, 27));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024, 10, 31));
+
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,11,11));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,11,15));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024,11,26));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024, 11,30));
+
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024, 12, 11));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024, 12, 14));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024, 12, 26));
+            this.testDataListAMFastingDays2024.Add(new DateTime(2024, 12, 30));
+
+            int i;
+            int nextIndex = -1;
+            calendar.correctFastingDays = 0;
+            calendar.incorrectFastingDays = 0;
+
+            foreach(var row in list)
+            {
+                if (row.fastingDayDateTime.Year != 2024) continue;
+
+                // no correct date has yet been found, so search the whole list of test data
+                if (nextIndex == -1)
+                {
+                    i = this.testDataListAMFastingDays2024.FindIndex(testDateTime => testDateTime.Month == row.fastingDayDateTime.Month && testDateTime.Day == row.fastingDayDateTime.Day);
+                    Console.WriteLine(row.fastingDayDateTime + " testdata index: " + i);
+
+                    if (i == -1) row.isCorrect = false;
+                    nextIndex = i+1;
+                }
+                else
+                {
+                    row.isCorrect = (this.testDataListAMFastingDays2024[nextIndex].Month == row.fastingDayDateTime.Month && this.testDataListAMFastingDays2024[nextIndex].Day == row.fastingDayDateTime.Day);
+                    nextIndex++;
+                }
+
+                if (row.isCorrect) calendar.correctFastingDays++;
+                else calendar.incorrectFastingDays++;
+
+                //Console.WriteLine("Accuracy:" + calendar.correctFastingDays + " " + calendar.incorrectFastingDays);
+            }
+
+        }
+
+ }
 }

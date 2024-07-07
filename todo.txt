@@ -1,4 +1,4 @@
-margin before new month using css:last (or :first)
-move most of info from Home.razor to About.razor, making Home.razor embeddable
+prevent the same tithis and sunrises to be processed multiple times, when changing dates
+move info from Home.razor to Science.razor, Programming.razor, (About.razor), making Home.razor embeddable
 option to show times in UTC - using select instead of checkbox
 option to show times (days, months) in local language or english - using select
