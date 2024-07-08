@@ -1,16 +1,26 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+<header style="padding-bottom:0;">
+    <nav style="margin-bottom:0;">
+        <ul>
+            <li><NavLink class="nav-link" href="" Match="NavLinkMatch.All">Calendar</NavLink></li>
+            <li><NavLink class="nav-link" href="counter" Match="NavLinkMatch.All">Share</NavLink></li>
+            <li><NavLink class="nav-link" href="science" Match="NavLinkMatch.All">Science</NavLink></li>
+            <li><NavLink class="nav-link" href="code" Match="NavLinkMatch.All">Code</NavLink></li>
+        </ul>
+    </nav>
+</header>
+<main>
+<h1>Ananda Marga Fasting Calendar</h1>
+@Body
+</main>
+<header style="padding-bottom:0;">
+    <nav style="margin-bottom:0;">
+        <ul>
+            <li><NavLink class="nav-link" href="" Match="NavLinkMatch.All">Calendar</NavLink></li>
+            <li><NavLink class="nav-link" href="counter" Match="NavLinkMatch.All">Share</NavLink></li>
+            <li><NavLink class="nav-link" href="science" Match="NavLinkMatch.All">Science</NavLink></li>
+            <li><NavLink class="nav-link" href="code" Match="NavLinkMatch.All">Code</NavLink></li>
+        </ul>
+    </nav>
+</header>

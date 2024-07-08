@@ -2,64 +2,49 @@
 
 <PageTitle>Fasting Calendar</PageTitle>
 
-<form>
-<table >
-    <tr>
-            <td colspan="2">
-                Please note! If you select a long time span this page may be unresponsive for some time!
-            </td>
-    </tr>
-    <tr>
-        <td>
-            <label for="start-date">Start Date:</label>
-            <input type="date" id="start-date" @bind="startDate" />
-        </td>
-        <td>
-            <label for="end-date">End Date:</label>
-            <input type="date" id="end-date" @bind="endDate" />
-        </td>
-    </tr>
+<div>
+    <label for="start-date">Start Date:</label>
+    <input type="date" id="start-date" @bind="startDate" />
 
-    <tr>
-        <td>
-            <input type="checkbox" id="_24hr-clock" @bind="show24hrClock" />
-            <label for="_24hr-clock">Show 24 hour clock</label>
-            <br />
-                <input type="checkbox" id="showTithiStartsAndEnds" @bind="showTithiStartsAndEnds" />
-            <label for="showTithiStartsAndEnds">Show Tithi Starts and Ends</label>
-            <br />
-                <input type="checkbox" id="showVaranasiSunrises" @bind="showVaranasiSunrises" />
-            <label for="showVaranasiSunrises">Show Varanasi Sunrises</label>
-            <br />
-                <input type="checkbox" id="showDebugInfo" @bind="showDebugInfo" />
-            <label for="showDebugInfo">Show Debug Info</label>
-        </td>
-        <td>
-            <label for="timeZone">Time Zone</label>
-                <select id="timeZone" @bind="selectedTimeZone">
-                <option value="varanasi">Varanasi @VaranasiTimeZone</option>
-                <option value="local">Local @LocalTimeZone</option>
-                <option value="utc">@UtcTimeZone</option>
-            </select>
-        </td>
-    </tr>
+    <label for="end-date">End Date:</label>
+    <input type="date" id="end-date" @bind="endDate" />
+    <small style="display:block; width:250px;">Please note! If you select a long time span this page may be unresponsive for some time!</small>
+    <br />
 
-        <tr class="show-@showDebugInfo">
-            <td>
-                <small>You may need to click something above to update the variables below:</small><br />
-                correctFastingDays: @correctFastingDays<br />
-                incorrectFastingDays: @incorrectFastingDays<br />
-                accuracy: @fastingDaysAccuracy<br />
-                heavy calculations: @listExecutions<br />
-            </td>
-            <td>
-            </td>
-        </tr>
+    <label for="timeZone">Time Zone</label>
+    <select id="timeZone" @bind="selectedTimeZone">
+        <option value="varanasi">Varanasi @VaranasiTimeZone</option>
+        <option value="local">Local @LocalTimeZone</option>
+        <option value="utc">@UtcTimeZone</option>
+    </select>
 
-</table>
-</form>
+    <input type="checkbox" id="showAdvanced" @bind="showAdvanced" />
+    <label for="showAdvanced">Advanced</label>
+    <br />
+    <input type="checkbox" id="_24hr-clock" @bind="show24hrClock" class="show-@showAdvanced" />
+    <label for="_24hr-clock" class="show-@showAdvanced">Show 24 hour clock</label>
+    <br />
+    <input type="checkbox" id="showTithiStartsAndEnds" @bind="showTithiStartsAndEnds" class="show-@showAdvanced" />
+    <label for="showTithiStartsAndEnds" class="show-@showAdvanced">Show Tithi Starts and Ends</label>
+    <br />
+    <input type="checkbox" id="showVaranasiSunrises" @bind="showVaranasiSunrises" class="show-@showAdvanced" />
+    <label for="showVaranasiSunrises" class="show-@showAdvanced">Show Varanasi Sunrises</label>
+    <br />
+    <input type="checkbox" id="showDebugInfo" @bind="showDebugInfo" class="show-@showAdvanced" />
+    <label for="showDebugInfo" class="show-@showAdvanced">Show Debug Info</label>
 
-<img src="img/fasting_2024_1.png" style="float:right;" class="show-@showDebugInfo">
+
+    <div class="show-@showDebugInfo show-@showAdvanced">
+        <small>You may need to click something aboveto update the variables below:</small><br />
+        <small>The accuracy is compared to Ananda Marga websites (probably from Ananda Marga diary). In other words, it has nothing to do with astronomical accuracy. Also, some official fasting dates in the comparison are probably wrong (human factor), meaning this caculator is probably more accurate. Look at the links at the bottom to read more about the science of this calculator.</small><br />
+        correctFastingDays: @correctFastingDays<br />
+        incorrectFastingDays: @incorrectFastingDays<br />
+        accuracy: @fastingDaysAccuracy<br />
+        heavy calculations: @listExecutions<br />
+    </div>
+</div>
+
+<img src="img/fasting_2024_1.png" style="float:right;" class="show-@showDebugInfo show-@showAdvanced">
 
 <table style="display:none;">
     @foreach (var item in GetTithis())
@@ -86,6 +71,7 @@
                 <td>@item.name</td>
             <td>
                 @FormatDateTime(item.fastingDayDateTime, true, true)<br />
+                <small><a href="@item.googleCalendarTemplateUrl">Add to Google Calendar</a></small><br />
                 <small class="show-@showTithiStartsAndEnds">
                     @item.name start: @FormatDateTime(item.startingItem.DateTimeUTC)<br />
                     @item.name end: @FormatDateTime(item.endingItem.DateTimeUTC)<br />
@@ -119,12 +105,13 @@
     //public DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day-7, 0, 0, 0);
     //public DateTime endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month+1, DateTime.Now.Day, 0, 0, 0);
 
+    private bool showAdvanced = true;
     private bool show24hrClock = true;
     private bool showTithiStartsAndEnds = true;
     private bool showVaranasiSunrises = true;
     private bool showDebugInfo = true;
 
-    private int listExecutions = 0;
+    private int listExecutions = 1; // since this value is not shown upon change, the value before last calculation is shown, so start from 1 instead of 0
     public int correctFastingDays = 0;
     public int incorrectFastingDays = 0;
     public float fastingDaysAccuracy = 1;
@@ -137,6 +124,8 @@
     public class TithiRow
     {
         public string name = "";
+        public string asciiName = "";
+        public string googleCalendarTemplateUrl = "";
         public TithiTools.Tithi startingItem;
         public TithiTools.Tithi endingItem;
         public SolarTimes? precedingSolarTimes; // solar times before the start of the tithi
@@ -156,9 +145,9 @@
             // varanasi lat and long
             this.intermediateSolarTimes = new SolarTimes(dateTime, 25.31668, 83.01041);
             this.intermediateSunrise = this.intermediateSolarTimes.DawnAstronomical; // accuracy 0,82
-            //this.intermediateSunrise = this.intermediateSolarTimes.Sunrise; // accuracy 0,78
-            //this.intermediateSunrise = this.intermediateSolarTimes.DawnCivil; // accuracy 0,8
-            //this.intermediateSunrise = this.intermediateSolarTimes.DawnNautical; // accuracy 0,82
+                                                                                     //this.intermediateSunrise = this.intermediateSolarTimes.Sunrise; // accuracy 0,78
+                                                                                     //this.intermediateSunrise = this.intermediateSolarTimes.DawnCivil; // accuracy 0,8
+                                                                                     //this.intermediateSunrise = this.intermediateSolarTimes.DawnNautical; // accuracy 0,82
         }
 
         public void setFastingDay()
@@ -216,6 +205,11 @@
 
             //fastingDaysTimeDiff = this.tithiDurationSecondDay - this.tithiDurationFirstDay;
             fastingDayMonthString = fastingDayDateTime.ToString("MM");
+
+            // https://github.com/InteractionDesignFoundation/add-event-to-calendar-docs/blob/main/services/google.md
+            // https://support.google.com/calendar/thread/128416249/calendar-url-generator-which-parameters?hl=en
+            googleCalendarTemplateUrl = "https://calendar.google.com/calendar/r/eventedit?text=" + asciiName;
+            googleCalendarTemplateUrl += "&amp;dates=" + fastingDayDateTime.ToString("yyyymmdd") + "/" + fastingDayDateTime.AddDays(1).ToString("yyyymmdd");
         }
 
     }
@@ -238,10 +232,26 @@
             if (startingAngles.Contains(item.Angle) )
             {
                 TithiRow row = new TithiRow();
-                if (item.Angle == 300) row.name = "Ekádashii";
-                if (item.Angle == 348) row.name = "Amávasyá";
-                if (item.Angle == 120) row.name = "Ekádashii";
-                if (item.Angle == 168) row.name = "Púrńimá";
+                if (item.Angle == 300)
+                {
+                    row.name = "Ekádashii";
+                    row.asciiName = "Ekadashii";
+                }
+                if (item.Angle == 348)
+                {
+                    row.name = "Amávasyá";
+                    row.asciiName = "Amavasya";
+                }
+                if (item.Angle == 120)
+                {
+                    row.name = "Ekádashii";
+                    row.asciiName = "Ekadashii";
+                }
+                if (item.Angle == 168)
+                {
+                    row.name = "Púrńimá";
+                    row.asciiName = "Purnima";
+                }
                 row.startingItem = item;
                 // varanasi lat and long
                 // will get the solar times before given time item.DateTimeUTC
@@ -261,7 +271,7 @@
 
         new TestData(this, list);
         listExecutions++;
-        Console.WriteLine("Accuracy:" + correctFastingDays + " " + incorrectFastingDays);
+        //Console.WriteLine("Accuracy:" + correctFastingDays + " " + incorrectFastingDays);
         return list;
     }
 
@@ -363,7 +373,7 @@
                 if (nextIndex == -1)
                 {
                     i = this.testDataListAMFastingDays2024.FindIndex(testDateTime => testDateTime.Month == row.fastingDayDateTime.Month && testDateTime.Day == row.fastingDayDateTime.Day);
-                    Console.WriteLine(row.fastingDayDateTime + " testdata index: " + i);
+                    //Console.WriteLine(row.fastingDayDateTime + " testdata index: " + i);
 
                     row.isCorrect = i != -1;
                     if (i != -1) nextIndex = i + 1;

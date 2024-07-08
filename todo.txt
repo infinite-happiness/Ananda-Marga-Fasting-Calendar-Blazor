@@ -2,3 +2,4 @@ prevent the same tithis and sunrises to be processed multiple times, when changi
 move info from Home.razor to Science.razor, Programming.razor, (About.razor), making Home.razor embeddable
 option to show times in UTC - using select instead of checkbox
 option to show times (days, months) in local language or english - using select
+embed code example for other webmasters

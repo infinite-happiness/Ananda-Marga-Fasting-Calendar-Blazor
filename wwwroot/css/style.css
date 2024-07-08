@@ -26,4 +26,10 @@
     /*border-top: 20px solid red;*/
 }
 
-.show-False{display:none;}
+.show-False{display:none !important;}
+.nav-link.active{color:black;}
+a{text-decoration:none;}
+
+body {
+    background-color:#EAE2B7;
+}
