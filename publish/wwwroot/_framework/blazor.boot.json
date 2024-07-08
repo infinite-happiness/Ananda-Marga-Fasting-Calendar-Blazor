@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Ananda Marga Fasting Calendar Blazor WebAssembly",
   "resources": {
-    "hash": "sha256-mt4jTlsXwMQCfLaDxY6cJJBitzhIJ9/4527BhXbYI7w=",
+    "hash": "sha256-x0cZx8M4cIzHLDkQeNj4PUhyPnUjTgiUIyT0FJbpks8=",
     "jsModuleNative": {
       "dotnet.native.8.0.6.c3e7fi786x.js": "sha256-YU6M9+jtDVnB8/wtrgIndOstzNh778Ls8g9XnbjorSk="
     },
@@ -17,7 +17,7 @@
       "icudt_no_CJK.dat": "sha256-L7sV7NEYP37/Qr2FPCePo5cJqRgTXRwGHuwF5Q+0Nfs="
     },
     "assembly": {
-      "Ananda Marga Fasting Calendar Blazor WebAssembly.wasm": "sha256-hhEpWhZ/NNMmy0MNjuRDzpFiL5lbIseVFkd0LPPNZRY=",
+      "Ananda Marga Fasting Calendar Blazor WebAssembly.wasm": "sha256-T9nUHPOo9juCCMMq8t1bGSWL7ZfBmv1NdoMtARqxQi4=",
       "CoordinateSharp.wasm": "sha256-gmeyjwyKAe1FsY7Ovflu223LAYKEwNqYgWa2WvdebuI=",
       "Innovative.Geometry.Angle.wasm": "sha256-Kn07d3NZ7dLzRyWCcl7K15HLB7Xq6gkSFcae9CrpaBM=",
       "Innovative.SolarCalculator.wasm": "sha256-S++j5lzFoEfzactX1dZSNFUmOQk1KVrhEGcN7GhRdSw=",

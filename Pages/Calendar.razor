@@ -11,13 +11,6 @@
     <small style="display:block; width:250px;">Please note! If you select a long time span this page may be unresponsive for some time!</small>
     <br />
 
-    <label for="timeZone">Time Zone</label>
-    <select id="timeZone" @bind="selectedTimeZone">
-        <option value="varanasi">Varanasi @VaranasiTimeZone</option>
-        <option value="local">Local @LocalTimeZone</option>
-        <option value="utc">@UtcTimeZone</option>
-    </select>
-
     <input type="checkbox" id="showAdvanced" @bind="showAdvanced" />
     <label for="showAdvanced">Advanced</label>
     <br />
@@ -33,6 +26,12 @@
     <input type="checkbox" id="showDebugInfo" @bind="showDebugInfo" class="show-@showAdvanced" />
     <label for="showDebugInfo" class="show-@showAdvanced">Show Debug Info</label>
 
+    <label for="timeZone" class="show-@showAdvanced">Time Zone</label>
+    <select id="timeZone" @bind="selectedTimeZone" class="show-@showAdvanced">
+        <option value="varanasi">Varanasi @VaranasiTimeZone</option>
+        <option value="local">Local @LocalTimeZone</option>
+        <option value="utc">@UtcTimeZone</option>
+    </select>
 
     <div class="show-@showDebugInfo show-@showAdvanced">
         <small>You may need to click something aboveto update the variables below:</small><br />
@@ -209,7 +208,7 @@
             // https://github.com/InteractionDesignFoundation/add-event-to-calendar-docs/blob/main/services/google.md
             // https://support.google.com/calendar/thread/128416249/calendar-url-generator-which-parameters?hl=en
             googleCalendarTemplateUrl = "https://calendar.google.com/calendar/r/eventedit?text=" + asciiName;
-            googleCalendarTemplateUrl += "&amp;dates=" + fastingDayDateTime.ToString("yyyymmdd") + "/" + fastingDayDateTime.AddDays(1).ToString("yyyymmdd");
+            googleCalendarTemplateUrl += "&dates=" + fastingDayDateTime.ToString("yyyyMMdd") + "/" + fastingDayDateTime.AddDays(1).ToString("yyyyMMdd");
         }
 
     }
