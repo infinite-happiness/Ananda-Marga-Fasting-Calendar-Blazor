@@ -4,3 +4,4 @@ embed code example for other webmasters
 add info on fasting (text and videos from https://india.anandamarga.org/fasting-calendar/ ?)
 begin science and code page with summaries (tldr) introductions
 https://github.com/orgs/community/discussions/63631
+direct link to subpage doesn't work: https://infinite-happiness.github.io/Ananda-Marga-Fasting-Calendar/science
