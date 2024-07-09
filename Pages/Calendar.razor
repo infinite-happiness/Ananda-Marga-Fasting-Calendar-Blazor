@@ -59,7 +59,7 @@
     }
 </table>
 
-<table>
+<table style="overflow:visible;">
     <tr>
         <th>Tithi</th>
         <th>Fasting Date</th>
@@ -96,19 +96,19 @@
     @using TithiTools;
     @using Innovative.SolarCalculator;
 
-    private DateTime startDate = new DateTime(2024, 01, 01);
-    private DateTime endDate = new DateTime(2025,01,01);
+    //private DateTime startDate = new DateTime(2024, 01, 01);
+    //private DateTime endDate = new DateTime(2025,01,01);
 
     // make sure it's the start of the day 00h00m00s
     // as you could otherwise miss an event if you set a date and it occurs that day but earlier than current time
-    //public DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day-7, 0, 0, 0);
-    //public DateTime endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month+1, DateTime.Now.Day, 0, 0, 0);
+    public DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day-7, 0, 0, 0);
+    public DateTime endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month+2, DateTime.Now.Day, 0, 0, 0);
 
-    private bool showAdvanced = true;
+    private bool showAdvanced = false;
     private bool show24hrClock = true;
-    private bool showTithiStartsAndEnds = true;
-    private bool showVaranasiSunrises = true;
-    private bool showDebugInfo = true;
+    private bool showTithiStartsAndEnds = false;
+    private bool showVaranasiSunrises = false;
+    private bool showDebugInfo = false;
 
     private int listExecutions = 1; // since this value is not shown upon change, the value before last calculation is shown, so start from 1 instead of 0
     public int correctFastingDays = 0;
@@ -238,7 +238,7 @@
                 }
                 if (item.Angle == 348)
                 {
-                    row.name = "Amávasyá";
+                    row.name = "Amávasyá (New Moon)";
                     row.asciiName = "Amavasya";
                 }
                 if (item.Angle == 120)
@@ -248,7 +248,7 @@
                 }
                 if (item.Angle == 168)
                 {
-                    row.name = "Púrńimá";
+                    row.name = "Púrńimá (Full Moon)";
                     row.asciiName = "Purnima";
                 }
                 row.startingItem = item;

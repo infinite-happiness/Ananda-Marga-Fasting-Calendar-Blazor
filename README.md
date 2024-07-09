@@ -3,6 +3,8 @@ This is a fasting chart for Ánanda Márga upavása with ekádashii, and ama
 
 Visit <a href="https://infinite-happiness.github.io/Ananda-Marga-Fasting-Calendar/">https://infinite-happiness.github.io/Ananda-Marga-Fasting-Calendar/</a> for accessing this tool, and its documentation.
 
+Created 2024 by Ramanuja - Robin Manoli
+
 <!-- 
 ## Features
 * Look up any fasting dates, any year

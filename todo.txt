@@ -1,5 +1,6 @@
-prevent the same tithis and sunrises to be processed multiple times, when changing dates
-move info from Home.razor to Science.razor, Programming.razor, (About.razor), making Home.razor embeddable
-option to show times in UTC - using select instead of checkbox
+prevent the same tithis and sunrises to be processed multiple times, when changing dates (seems to be working)
 option to show times (days, months) in local language or english - using select
 embed code example for other webmasters
+add info on fasting (text and videos from https://india.anandamarga.org/fasting-calendar/ ?)
+begin science and code page with summaries (tldr) introductions
+https://github.com/orgs/community/discussions/63631
