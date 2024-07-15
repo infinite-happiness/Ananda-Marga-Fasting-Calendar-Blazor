@@ -3,10 +3,10 @@
 <PageTitle>Science - Ananda Marga Fasting Calendar</PageTitle>
 <h3>TL;DR</h3>
 <p>
-    The fasting dates are based on the solar day (sunrise to sunrise) which occurs closest to the relevant tithis (ekádashii, amávasyá and púrńimá).
-    Astronomical dawn is considered the start of the day, and the Asia/Kolkata (Varanasi) time zone is used to determine the fasting day.
-    In other words, the ekádashii, amávasyá or púrńimá which occurs closest to the solar day in Varanasi (based on astronomical dawn) is the selected fasting day - according to this software.
-    This software uses astronomy libraries to calculate the lunar phases used (called thithis) for picking the fasting dates.
+    The fasting dates are based on the solar day (sunrise to sunrise) which occurs closest to the relevant lunar phases (ekádashii, amávasyá and púrńimá).
+    This software uses astronomical dawn as the start of the day, and the Asia/Kolkata (Varanasi) time zone is used to determine the fasting day.
+    In other words, the ekádashii, amávasyá or púrńimá which occurs closest to the solar day in Varanasi (based on astronomical dawn) is the selected fasting day.
+    This software uses astronomy libraries to calculate the lunar phases used for picking the fasting dates.
 </p>
 <p>
     See also <a href="code">Code</a>.
@@ -53,6 +53,13 @@ Here follows some quotes from that website:<br />
     <li>Púrńimá (Full Moon): occurs at angles 168° - 180°</li>
 </ul>
 
+<h3>Calculating Without Tithis</h3>
+<p>
+    Since it's easier to find programming libraries (such as more accurate ones) that calculate dawn, new moon and full moon, an alternative method to get the fasting date could be to calculate the geocentric phase angle at the dawns around new moon and full moon.
+    (Which means the library has to calculate the geocentric phase angle, which the seemingly high precision library <a href="https://github.com/andrmoel/astronomy-bundle-js" target="_blank">https://github.com/andrmoel/astronomy-bundle-js</a> does. Also see <a href="https://github.com/cosinekitty/astronomy/tree/master/source/js#SearchMoonPhase" target="_blank">https://github.com/cosinekitty/astronomy/tree/master/source/js#SearchMoonPhase</a>
+    This way you wouldn't calculate the time which the tithi spans over the solar day, but instead which angle the day starts and ends with. You can then calculate which solar day is the closest to the tithi by angular comparison, rather than time span.
+</p>
+
 <h3>Dawn and Sunrise</h3>
 <p>The concepts of dawn and sunrise have different meanings in modern science. On the illustration below you can see that the sun is below the horizon during dawn, and in the center of the horizon at sunrise.</p>
 <img src="img/sun-position-sunrise-dawn.webp" />
@@ -75,24 +82,71 @@ Here follows some quotes from that website:<br />
     The fasting dates on the above web sites all correspond to the table below. These dates were compared to the calculation of this software.
     It can be concluded with high probability that the tithi times are based on Asia/Kolkata (Varanasi) time zone, as well as the chosen days for fasting.
 </p>
+<h4>Different Types of Dawn</h4>
 <p>
     Comparisons were made using sunrise and the different types of dawn. The accuracy when comparing this software's calculations with the table below were:
 </p>
 <ul>
-    <li>Astronomical Dawn: 82%</li>
-    <li>Nautical Dawn: 82%</li>
-    <li>Civil Dawn: 80%</li>
-    <li>Sunrise: 78%</li>
+    <li>Astronomical Dawn: 88%</li>
+    <li>Nautical Dawn: 88%</li>
+    <li>Civil Dawn: 86%</li>
+    <li>Sunrise: 84%</li>
 </ul>
 <p>
     Since astronomical dawn and nautical dawn had the same accuracy, astronomical dawn was the selected method to use.
     The rationale is that it makes the most sense if the beginning of the day is the actual beginning of something, and the astronomical dawn is the first dawn.
 </p>
+<h4>Differences</h4>
 <p>
     The reasons 100% accuracy wasn't achieved:
 </p>
 <ul>
-    <li>The calculations of tithis and sunrise are not exactly the same. Usually the difference is small, and still the chosen fasting day is different because tithi occurs almost exactly in between two solar days. </li>
+    <li>The calculations of tithis and sunrise are not exactly the same. Usually the difference is small, and still the chosen fasting day is different because the tithi spans over similarly over both two solar days. The sunrise also depends on altitude, which is not taken into account in this software.</li>
     <li>Some of the official fasting days are miscalculated (probably mistaken because of human error).</li>
 </ul>
+
+<h5>Example - Calculation Difference</h5>
+<h6>This Calculator</h6>
+<p>
+    Amávasyá (New Moon) - 11 Jan 2024
+    <br />
+    Amavasya start: 10 Jan 2024, 08:12 PM Varanasi time
+    <br />
+    Amavasya end: 11 Jan 2024, 05:27 PM Varanasi time
+    <br />
+    Astronomical Dawn: 11 Jan 2024, 06:24 AM Varanasi time
+    <br />
+    Amavasya start to sunrise: 10:11:28
+    <br />
+    Sunrise to Amavasya end: 11:03:27
+</p>
+
+<h6>The Official Calculations</h6>
+<p>
+    I don't know how they calculated the sunrise/dawn, but you can see from the calculation that the sunrise is almost at the center of the tithi,
+    so it's possible their sunrise value made their fasting day on Jan 10th.
+</p>
+
+<h5>Example - Human Error</h5>
+<h6>This Calculator</h6>
+<p>
+    Púrńimá (Full Moon) - 24 Mar 2024
+    <br />
+    Amavasya start: 24 Mar 2024, 09:57 AM Varanasi time
+    <br />
+    Amavasya end: 25 Mar 2024, 12:31 PM Varanasi time
+    <br />
+    Astronomical Dawn: 25 Mar 2024, 06:56 Varanasi time
+    <br />
+    Purnima start to dawn: 20:59:25
+    <br />
+    Dawn to Purnima end: 05:35:15
+</p>
+
+<h6>The Official Calculations</h6>
+<p>
+    I don't know how they calculated the sunrise/dawn, but here it's hard to understand how the fasting date could be Mar 25th. So it's probably an error made by the human factor.
+</p>
+
 <img src="img/fasting_2024_1.png" />
+<img src="img/fasting_2024_2.png" />

@@ -1,3 +1,4 @@
+bugs - gets jul 06 2024 which is wrong but doesn't realize it's an error
 prevent the same tithis and sunrises to be processed multiple times, when changing dates (seems to be working)
 option to show times (days, months) in local language or english - using select
 embed code example for other webmasters

@@ -10,12 +10,30 @@
     <input type="date" id="end-date" @bind="endDate" />
     <small style="display:block; width:250px;">Please note! If you select a long time span this page may be unresponsive for some time!</small>
     <br />
+    <script>
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+
+        // keep app from crashing by ensuring end date is always after start date
+        const handleStartDateChange = () => {
+            const maxDate = new Date(endDateInput.value);
+            const minDate = new Date(startDateInput.value);
+            maxDate.setHours(maxDate.getHours() - 24);
+            startDateInput.max = maxDate.toISOString().substring(0, 10);
+            minDate.setHours(minDate.getHours() + 24);
+            endDateInput.min = minDate.toISOString().substring(0, 10);
+        };
+        handleStartDateChange();
+        startDateInput.addEventListener('change', handleStartDateChange);
+        endDateInput.addEventListener('change', handleStartDateChange);
+
+    </script>
 
     <input type="checkbox" id="showAdvanced" @bind="showAdvanced" />
     <label for="showAdvanced">Advanced</label>
     <br />
-    <input type="checkbox" id="_24hr-clock" @bind="show24hrClock" class="show-@showAdvanced" />
-    <label for="_24hr-clock" class="show-@showAdvanced">Show 24 hour clock</label>
+    <input type="checkbox" id="show24hrClock" @bind="show24hrClock" class="show-@showAdvanced" />
+    <label for="show24hrClock" class="show-@showAdvanced">Show 24 hour clock</label>
     <br />
     <input type="checkbox" id="showTithiStartsAndEnds" @bind="showTithiStartsAndEnds" class="show-@showAdvanced" />
     <label for="showTithiStartsAndEnds" class="show-@showAdvanced">Show Tithi Starts and Ends</label>
@@ -28,22 +46,53 @@
 
     <label for="timeZone" class="show-@showAdvanced">Time Zone</label>
     <select id="timeZone" @bind="selectedTimeZone" class="show-@showAdvanced">
-        <option value="varanasi">Varanasi @VaranasiTimeZone</option>
-        <option value="local">Local @LocalTimeZone</option>
-        <option value="utc">@UtcTimeZone</option>
+        <option value="Varanasi">Varanasi @VaranasiTimeZone</option>
+        <option value="Local">Local @LocalTimeZone</option>
+        <option value="UTC">@UtcTimeZone</option>
     </select>
 
     <div class="show-@showDebugInfo show-@showAdvanced">
         <small>You may need to click something aboveto update the variables below:</small><br />
         <small>The accuracy is compared to Ananda Marga websites (probably from Ananda Marga diary). In other words, it has nothing to do with astronomical accuracy. Also, some official fasting dates in the comparison are probably wrong (human factor), meaning this caculator is probably more accurate. Look at the links at the bottom to read more about the science of this calculator.</small><br />
-        correctFastingDays: @correctFastingDays<br />
-        incorrectFastingDays: @incorrectFastingDays<br />
-        accuracy: @fastingDaysAccuracy<br />
-        heavy calculations: @listExecutions<br />
+        correctFastingDays: <strong>@correctFastingDays</strong><br />
+        incorrectFastingDays: <strong>@incorrectFastingDays</strong><br />
+        accuracy: <strong>@fastingDaysAccuracy</strong><br />
+        heavy calculations: <strong>@listExecutions</strong><br />
     </div>
+
+    <button class="show-@showAdvanced" style="padding:0.1em" onclick="
+        if ( !confirm('This may take some time') ) return;
+
+        el = document.getElementById('start-date');
+        el.value = '2024-01-01';
+        el.dispatchEvent(new Event('change'));
+
+        el2 = document.getElementById('end-date');
+        el2.value = '2025-01-01';
+        el2.dispatchEvent(new Event('change'));
+
+        el3 = document.getElementById('showTithiStartsAndEnds');
+        el3.checked = true;
+        el3.dispatchEvent(new Event('change'));
+
+        el4 = document.getElementById('showVaranasiSunrises');
+        el4.checked = true;
+        el4.dispatchEvent(new Event('change'));
+
+        el5 = document.getElementById('showDebugInfo');
+        el5.checked = true;
+        el5.dispatchEvent(new Event('change'));
+
+        el5 = document.getElementById('show24hrClock');
+        el5.checked = false;
+        el5.dispatchEvent(new Event('change'));
+    ">
+        Compare Calculations with Test Data
+    </button>
 </div>
 
-<img src="img/fasting_2024_1.png" style="float:right;" class="show-@showDebugInfo show-@showAdvanced">
+<img src="img/fasting_2024_1.png" style="position:absolute; right:0;" class="show-@showDebugInfo show-@showAdvanced">
+<img src="img/fasting_2024_2.png" style="position:absolute; right:0; top:1750px;" class="show-@showDebugInfo show-@showAdvanced">
 
 <table style="display:none;">
     @foreach (var item in GetTithis())
@@ -69,18 +118,18 @@
         <tr class="month-@item.fastingDayMonthString">
                 <td>@item.name</td>
             <td>
-                @FormatDateTime(item.fastingDayDateTime, true, true)<br />
+                @FormatDateTime(item.fastingDayDateTime, true, false)<br />
                 <small><a href="@item.googleCalendarTemplateUrl">Add to Google Calendar</a></small><br />
                 <small class="show-@showTithiStartsAndEnds">
-                    @item.name start: @FormatDateTime(item.startingItem.DateTimeUTC)<br />
-                    @item.name end: @FormatDateTime(item.endingItem.DateTimeUTC)<br />
+                    @item.asciiName start: <strong>@FormatDateTime(item.startingItem.DateTimeUTC)</strong><br />
+                    @item.asciiName end: <strong>@FormatDateTime(item.endingItem.DateTimeUTC)</strong><br />
                 </small>
                 <small class="show-@showVaranasiSunrises">
-                Sunrise: @FormatDateTime(item.intermediateSunrise)<br />
+                    Sunrise (Astronomical Dawn): <strong>@FormatDateTime(item.intermediateSunrise)</strong><br />
                 </small>
                 <small class="show-@showDebugInfo">
-                Time start to sunrise: @(item.intermediateSunrise - item.startingItem.DateTimeUTC) <br />
-                    Time sunrise to end: @(item.endingItem.DateTimeUTC-item.intermediateSunrise)<br />
+                    @item.asciiName start to dawn: <strong>@(item.intermediateSunrise - item.startingItem.DateTimeUTC)</strong><br />
+                    Dawn to @item.asciiName end: <strong>@(item.endingItem.DateTimeUTC - item.intermediateSunrise)</strong><br />
                     @if (!item.isCorrect)
                     {
                         <span style="color:red;">unexpected fasting date</span><br />
@@ -115,7 +164,7 @@
     public int incorrectFastingDays = 0;
     public float fastingDaysAccuracy = 1;
 
-    public string selectedTimeZone = "varanasi";
+    public string selectedTimeZone = "Varanasi";
     private static readonly TimeZoneInfo VaranasiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Kolkata");
     private static readonly TimeZoneInfo LocalTimeZone = TimeZoneInfo.Local;
     private static readonly TimeZoneInfo UtcTimeZone = TimeZoneInfo.Utc;
@@ -130,7 +179,7 @@
         public SolarTimes? precedingSolarTimes; // solar times before the start of the tithi
         public SolarTimes? intermediateSolarTimes; // solar times during the tithi
                                                    //public SolarTimes? succeedingSolarTimes; // solar times after the end of the tithi
-        public DateTime intermediateSunrise;
+        public DateTime intermediateSunrise; // the first sunrise after tithi start
         public TimeSpan tithiDurationFirstDay;
         public TimeSpan tithiDurationSecondDay;
         //public TimeSpan fastingDaysTimeDiff;
@@ -142,11 +191,11 @@
         private void setIntermediateSolarTimes(DateTime dateTime)
         {
             // varanasi lat and long
-            this.intermediateSolarTimes = new SolarTimes(dateTime, 25.31668, 83.01041);
-            this.intermediateSunrise = this.intermediateSolarTimes.DawnAstronomical; // accuracy 0,82
-                                                                                     //this.intermediateSunrise = this.intermediateSolarTimes.Sunrise; // accuracy 0,78
-                                                                                     //this.intermediateSunrise = this.intermediateSolarTimes.DawnCivil; // accuracy 0,8
-                                                                                     //this.intermediateSunrise = this.intermediateSolarTimes.DawnNautical; // accuracy 0,82
+            intermediateSolarTimes = new SolarTimes(dateTime, 25.31668, 83.01041);
+            intermediateSunrise = intermediateSolarTimes.DawnAstronomical;
+            //intermediateSunrise = intermediateSolarTimes.DawnCivil;
+            //intermediateSunrise = intermediateSolarTimes.DawnNautical;
+            intermediateSunrise = intermediateSolarTimes.Sunrise;
         }
 
         public void setFastingDay()
@@ -199,8 +248,11 @@
             //{
             //}
 
-            if (this.tithiDurationFirstDay > this.tithiDurationSecondDay) fastingDayDateTime = this.startingItem.DateTimeUTC;
-            else fastingDayDateTime = this.endingItem.DateTimeUTC;
+            if (tithiDurationFirstDay > tithiDurationSecondDay) fastingDayDateTime = intermediateSunrise.AddDays(-1);
+            else fastingDayDateTime = intermediateSunrise;
+            //fastingDayDateTime = fastingDayDateTime.AddDays(dayFix);
+            fastingDayDateTime = TimeZoneInfo.ConvertTimeFromUtc(fastingDayDateTime, VaranasiTimeZone); // set fasting day to Varanasi based datetime
+
 
             //fastingDaysTimeDiff = this.tithiDurationSecondDay - this.tithiDurationFirstDay;
             fastingDayMonthString = fastingDayDateTime.ToString("MM");
@@ -274,13 +326,14 @@
         return list;
     }
 
-    public string FormatDateTime(DateTime dateTimeUTC, bool dateOnly=false, bool forceVaranasiTime = false)
+    public string FormatDateTime(DateTime dateTimeUTC, bool dateOnly=false, bool allowConvertTimeZone = true)
     {
         var convertedDateTime = dateTimeUTC;
-        if (selectedTimeZone == "local") convertedDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUTC, LocalTimeZone);
-        if (selectedTimeZone == "varanasi" || forceVaranasiTime) convertedDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUTC, VaranasiTimeZone);
+        if (selectedTimeZone == "Local" && allowConvertTimeZone) convertedDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUTC, LocalTimeZone);
+        //if (selectedTimeZone == "Varanasi" || forceVaranasiTime) convertedDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUTC, VaranasiTimeZone);
+        else if (selectedTimeZone == "Varanasi" && allowConvertTimeZone) convertedDateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeUTC, VaranasiTimeZone);
         //return convertedDateTime.ToString("yyyy-MM-dd HH:mm:ss");
-        if (!dateOnly) return show24hrClock ? convertedDateTime.ToString("ddd, dd MMM yyyy, HH:mm") : convertedDateTime.ToString("ddd, dd MMM yyyy, hh:mm tt");
+        if (!dateOnly) return (show24hrClock ? convertedDateTime.ToString("ddd, dd MMM yyyy, HH:mm ") : convertedDateTime.ToString("ddd, dd MMM yyyy, hh:mm tt ")) + selectedTimeZone + " time";
         return show24hrClock ? convertedDateTime.ToString("ddd, dd MMM yyyy") : convertedDateTime.ToString("ddd, dd MMM yyyy");
     }
 
@@ -372,10 +425,17 @@
                 if (nextIndex == -1)
                 {
                     i = this.testDataListAMFastingDays2024.FindIndex(testDateTime => testDateTime.Month == row.fastingDayDateTime.Month && testDateTime.Day == row.fastingDayDateTime.Day);
-                    //Console.WriteLine(row.fastingDayDateTime + " testdata index: " + i);
-
                     row.isCorrect = i != -1;
-                    if (i != -1) nextIndex = i + 1;
+
+                    if (i == -1)
+                    {
+                          //Console.WriteLine("Fasting date: " + row.fastingDayDateTime + ", testdata index: " + i);
+                    }
+                    else
+                    {
+                        //Console.WriteLine("Fasting date: " + row.fastingDayDateTime + ", testdata index: " + i + ", testdata date: " + testDataListAMFastingDays2024[i]);
+                        nextIndex = i + 1;
+                    }
                 }
                 else
                 {
