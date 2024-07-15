@@ -7,7 +7,7 @@
     <script>
         <!--base tag on dev/prod-->
         var baseTag = document.createElement("base");
-        var appRoot = "/Ananda-Marga-Fasting-Calendar/";
+        var appRoot = "/Ananda-Marga-Fasting-Calendar-Blazor/";
         var path = document.location.pathname;
         baseTag.href = (path.indexOf(appRoot) === 0 || path + "/" === appRoot) ? appRoot : "/";
         document.head.appendChild(baseTag);
