@@ -192,10 +192,10 @@
         {
             // varanasi lat and long
             intermediateSolarTimes = new SolarTimes(dateTime, 25.31668, 83.01041);
-            intermediateSunrise = intermediateSolarTimes.DawnAstronomical;
-            //intermediateSunrise = intermediateSolarTimes.DawnCivil;
-            //intermediateSunrise = intermediateSolarTimes.DawnNautical;
-            intermediateSunrise = intermediateSolarTimes.Sunrise;
+            //intermediateSunrise = intermediateSolarTimes.DawnAstronomical.ToUniversalTime();
+            //intermediateSunrise = intermediateSolarTimes.DawnCivil.ToUniversalTime(); // 90% accuracy
+            //intermediateSunrise = intermediateSolarTimes.DawnNautical.ToUniversalTime();
+            intermediateSunrise = intermediateSolarTimes.Sunrise.ToUniversalTime();
         }
 
         public void setFastingDay()
