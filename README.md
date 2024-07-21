@@ -1,7 +1,9 @@
 ﻿# Ananda Marga Fasting Calendar
 This is a fasting chart for Ánanda Márga upavása with ekádashii, and amávasyá and púrńimá dates.
 
-Visit <a href="https://infinite-happiness.github.io/Ananda-Marga-Fasting-Calendar-Blazor/">https://infinite-happiness.github.io/Ananda-Marga-Fasting-Calendar/Blazor</a> for accessing this tool, and its documentation.
+An improved version of this tool can be found here: https://infinite-happiness.github.io/Ananda-Marga-Fasting-Calendar/
+
+Visit https://infinite-happiness.github.io/Ananda-Marga-Fasting-Calendar-Blazor for accessing the old version of this tool, and its documentation.
 
 Created 2024 by Ramanuja - Robin Manoli
 
