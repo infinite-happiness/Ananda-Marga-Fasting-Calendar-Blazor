@@ -125,7 +125,7 @@
                     @item.asciiName end: <strong>@FormatDateTime(item.endingItem.DateTimeUTC)</strong><br />
                 </small>
                 <small class="show-@showVaranasiSunrises">
-                    Sunrise (Astronomical Dawn): <strong>@FormatDateTime(item.intermediateSunrise)</strong><br />
+                    Sunrise (Civil Dawn): <strong>@FormatDateTime(item.intermediateSunrise)</strong><br />
                 </small>
                 <small class="show-@showDebugInfo">
                     @item.asciiName start to dawn: <strong>@(item.intermediateSunrise - item.startingItem.DateTimeUTC)</strong><br />
@@ -193,9 +193,9 @@
             // varanasi lat and long
             intermediateSolarTimes = new SolarTimes(dateTime, 25.31668, 83.01041);
             //intermediateSunrise = intermediateSolarTimes.DawnAstronomical.ToUniversalTime();
-            //intermediateSunrise = intermediateSolarTimes.DawnCivil.ToUniversalTime(); // 90% accuracy
+            intermediateSunrise = intermediateSolarTimes.DawnCivil.ToUniversalTime(); // 90% accuracy
             //intermediateSunrise = intermediateSolarTimes.DawnNautical.ToUniversalTime();
-            intermediateSunrise = intermediateSolarTimes.Sunrise.ToUniversalTime();
+            //intermediateSunrise = intermediateSolarTimes.Sunrise.ToUniversalTime();
         }
 
         public void setFastingDay()
